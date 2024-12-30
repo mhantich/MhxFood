@@ -1,4 +1,3 @@
-import React from 'react';
 
 const ServiceCard = ({ image, title }: { image: string; title: string }) => (
   <div className="relative group cursor-pointer">
