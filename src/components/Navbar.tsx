@@ -38,7 +38,7 @@ export const Navbar = () => {
               <Link to='/About'  className="hover:text-primary">About</Link>
               <Link to='Menu'  className="hover:text-primary">Menu</Link>
               <Link to='/Pages'  className="hover:text-primary">Pages</Link>
-              <Link to='/Conatct'  className="hover:text-primary">Contact</Link>
+              <Link to='/Booking'  className="hover:text-primary">Booking</Link>
               <button className="rounded-full bg-primary px-6 py-2 text-white hover:bg-primary/90">
                 Book A Table
               </button>
@@ -76,7 +76,7 @@ export const Navbar = () => {
               <Link to='/About'  className="hover:text-primary">About</Link>
               <Link to='Menu'  className="hover:text-primary">Menu</Link>
               <Link to='/Pages'  className="hover:text-primary">Pages</Link>
-              <Link to='/Conatct'  className="hover:text-primary">Contact</Link>
+              <Link to='/Booking'  className="hover:text-primary">Booking</Link>
               <button className="rounded-full bg-primary px-6 py-2 text-white hover:bg-primary/90">
                 Book A Table
               </button>

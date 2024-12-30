@@ -1,12 +1,23 @@
-import { motion } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function BookingSection() {
   return (
-    <div  style={{ backgroundImage: `url(https://www.sentinellesduweb.com/wp-content/uploads/2021/10/senitnellesduweb-google.fr_.png)` }} className="relative min-h-screen">
+    <div
+      style={{
+        backgroundImage: `url(https://www.sentinellesduweb.com/wp-content/uploads/2021/10/senitnellesduweb-google.fr_.png)`,
+      }}
+      className="relative min-h-screen"
+    >
       {/* Background Map */}
 
       <div className="absolute inset-0 bg-black/70 z-10" />
@@ -21,7 +32,8 @@ export default function BookingSection() {
         >
           <h1 className="text-5xl font-serif mb-4 text-white">Book A Table</h1>
           <p className="text-gray-600">
-            We consider all the drivers of change to create a truly happening experience
+            We consider all the drivers of change to create a truly happening
+            experience
           </p>
         </motion.div>
 
@@ -55,15 +67,15 @@ export default function BookingSection() {
 
               <Input placeholder="Name" />
               <Input placeholder="Phone" />
-              
+
               <Select>
                 <SelectTrigger>
                   <SelectValue placeholder="Number of People" />
                 </SelectTrigger>
                 <SelectContent>
-                  {[1, 2, 3, 4, 5, 6].map(num => (
+                  {[1, 2, 3, 4, 5, 6].map((num) => (
                     <SelectItem key={num} value={num.toString()}>
-                      {num} {num === 1 ? 'Person' : 'People'}
+                      {num} {num === 1 ? "Person" : "People"}
                     </SelectItem>
                   ))}
                 </SelectContent>

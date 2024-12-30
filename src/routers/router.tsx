@@ -16,7 +16,7 @@ export const routers = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'Menu', element: <RestaurantMenu /> },
       { path: 'About', element: <About /> },
-      { path: 'Conatct', element: <BookingSection /> },
+      { path: 'Booking', element: <BookingSection /> },
       { path: 'Pages', element: <BlogSection /> },
     //   { path: 'singup', element: <Singup /> },
       {
