@@ -1,6 +1,9 @@
+
 import { RootLayout } from '@/layouts/RootLayout';
 import Home from '@/page/Home';
+
 import { createBrowserRouter } from 'react-router-dom';
+import RestaurantMenu from './RestaurantMenu';
 
 export const routers = createBrowserRouter([
   {
@@ -8,7 +11,7 @@ export const routers = createBrowserRouter([
     element: <RootLayout />,
     children: [
       { index: true, element: <Home /> },
-    //   { path: 'rooms', element: <RoomsPage /> },
+      { path: 'Menu', element: <RestaurantMenu /> },
     //   { path: 'booking', element: <BookingPage /> },
     //   { path: 'login', element: <Login /> },
     //   { path: 'singup', element: <Singup /> },

@@ -1,5 +1,6 @@
 import { Mail, Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,9 +21,9 @@ export const Navbar = () => {
               </span>
             </div>
             <div className="flex items-center gap-4">
-              <a href="#" className="hover:text-primary">Twitter</a>
-              <a href="#" className="hover:text-primary">Facebook</a>
-              <a href="#" className="hover:text-primary">Instagram</a>
+              <a  className="hover:text-primary">Twitter</a>
+              <a  className="hover:text-primary">Facebook</a>
+              <a  className="hover:text-primary">Instagram</a>
             </div>
           </div>
   
@@ -33,11 +34,11 @@ export const Navbar = () => {
             </div>
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
-              <a href="#" className="hover:text-primary">Home</a>
-              <a href="#" className="hover:text-primary">About</a>
-              <a href="#" className="hover:text-primary">Menu</a>
-              <a href="#" className="hover:text-primary">Pages</a>
-              <a href="#" className="hover:text-primary">Contact</a>
+              <Link to='/'  className="hover:text-primary">Home</Link>
+              <Link to='/About'  className="hover:text-primary">About</Link>
+              <Link to='Menu'  className="hover:text-primary">Menu</Link>
+              <Link to='/Pages'  className="hover:text-primary">Pages</Link>
+              <Link to='/Contact'  className="hover:text-primary">Contact</Link>
               <button className="rounded-full bg-primary px-6 py-2 text-white hover:bg-primary/90">
                 Book A Table
               </button>
@@ -71,11 +72,11 @@ export const Navbar = () => {
               </button>
             </div>
             <nav className="flex flex-col p-6 space-y-4">
-              <a href="#" className="hover:text-primary">Home</a>
-              <a href="#" className="hover:text-primary">About</a>
-              <a href="#" className="hover:text-primary">Menu</a>
-              <a href="#" className="hover:text-primary">Pages</a>
-              <a href="#" className="hover:text-primary">Contact</a>
+              <Link to='/'  className="hover:text-primary">Home</Link>
+              <Link to='/About'  className="hover:text-primary">About</Link>
+              <Link to='Menu'  className="hover:text-primary">Menu</Link>
+              <Link to='/Pages'  className="hover:text-primary">Pages</Link>
+              <Link to='/Contact'  className="hover:text-primary">Contact</Link>
               <button className="rounded-full bg-primary px-6 py-2 text-white hover:bg-primary/90">
                 Book A Table
               </button>
