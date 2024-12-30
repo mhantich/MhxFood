@@ -8,7 +8,7 @@ const DeliveryFeatures = () => {
     ];
   
     return (
-      <div className="flex py-20 flex-col md:flex-row gap-8  max-w-6xl mx-auto ">
+      <div className="flex py-20 flex-col md:flex-row gap-8 px-5  max-w-6xl mx-auto ">
    
 
      

@@ -24,7 +24,7 @@
     ];
   
     return (
-      <div className="max-w-6xl mx-auto py-12">
+      <div className="max-w-6xl mx-auto px-5 py-12">
         <h2 className="text-3xl font-serif text-center mb-12">What Our Customers Say</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
