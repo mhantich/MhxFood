@@ -4,6 +4,7 @@ import Home from '@/page/Home';
 
 import { createBrowserRouter } from 'react-router-dom';
 import RestaurantMenu from './RestaurantMenu';
+import About from '@/page/About';
 
 export const routers = createBrowserRouter([
   {
@@ -12,7 +13,7 @@ export const routers = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: 'Menu', element: <RestaurantMenu /> },
-    //   { path: 'booking', element: <BookingPage /> },
+      { path: 'About', element: <About /> },
     //   { path: 'login', element: <Login /> },
     //   { path: 'singup', element: <Singup /> },
       {
