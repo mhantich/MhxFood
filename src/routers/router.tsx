@@ -3,8 +3,10 @@ import { RootLayout } from '@/layouts/RootLayout';
 import Home from '@/page/Home';
 
 import { createBrowserRouter } from 'react-router-dom';
-import RestaurantMenu from './RestaurantMenu';
+import RestaurantMenu from '../page/RestaurantMenu';
 import About from '@/page/About';
+import BookingSection from '@/page/BookingSection';
+import BlogSection from '@/components/BlogSection';
 
 export const routers = createBrowserRouter([
   {
@@ -14,7 +16,8 @@ export const routers = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'Menu', element: <RestaurantMenu /> },
       { path: 'About', element: <About /> },
-    //   { path: 'login', element: <Login /> },
+      { path: 'Conatct', element: <BookingSection /> },
+      { path: 'Pages', element: <BlogSection /> },
     //   { path: 'singup', element: <Singup /> },
       {
         path: 'profile',
