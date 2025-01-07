@@ -16,3 +16,10 @@ export interface Category {
 
     // add other meal properties as needed
   }
+  export interface Table {
+    _id: string;
+    tableNumber: string;
+    capacity: number;
+    isAvailable: boolean;
+  }
+  

@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/stores/userStore';
 import { signUp } from '@/apis/auth/singUp';
 interface SignUpFormData {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   phone: string;
@@ -26,7 +27,8 @@ const SignUp = () => {
     formState: { errors, isSubmitting }
   } = useForm<SignUpFormData>({
     defaultValues: {
-      name: '',
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
       phone: '',
@@ -119,15 +121,27 @@ const SignUp = () => {
 
           <motion.div>
             <input
-              {...register('name', { 
+              {...register('firstName', { 
                 required: 'Name is required',
                 minLength: { value: 2, message: 'Name must be at least 2 characters' }
               })}
               type="text"
-              placeholder="Full Name"
+                placeholder="First Name"
               className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-pink-500"
             />
-            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
+            {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName.message}</p>}
+          </motion.div>
+          <motion.div>
+            <input
+              {...register('lastName', { 
+                required: 'Name is required',
+                minLength: { value: 2, message: 'Name must be at least 2 characters' }
+              })}
+              type="text"
+              placeholder="Last Name"
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-pink-500"
+            />
+            {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName.message}</p>}
           </motion.div>
 
           <motion.div>

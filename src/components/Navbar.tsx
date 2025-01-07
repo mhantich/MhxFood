@@ -74,7 +74,7 @@ export const Navbar = () => {
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span>{user?.name}</span>
+                  <span>{user?.firstName} {user?.lastName}</span>
                 </button>
 
                 {/* Profile Dropdown */}

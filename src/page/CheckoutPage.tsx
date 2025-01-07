@@ -1,18 +1,64 @@
-import { useState } from 'react';
-import { Check, MapPin, CreditCard, Truck, User } from 'lucide-react';
-import cartStore from '@/stores/cartStore';
+import { useState, useEffect } from "react";
+import { Check, CreditCard, AlertCircle } from "lucide-react";
+import { useForm } from "react-hook-form";
+import cartStore from "@/stores/cartStore";
+import { ShoppingCart } from "lucide-react";
+// import DeliveryOptions from "@/components/DeliveryOptions";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import DelveryOptions from "@/components/DelveryOptions";
+// import Information from "@/components/Information";
+// import DeliveryOptions from "@/components/DeliveryOptions";
 
 const CheckoutPage = () => {
   const [activeStep, setActiveStep] = useState(1);
-  const [deliveryType, setDeliveryType] = useState('');
-  const [selectedTime, setSelectedTime] = useState('');
-  const [selectedTable, setSelectedTable] = useState('');
-  
-  // Sample cart data - replace with your actual cart data
-const { cart } = cartStore();
+  const [deliveryType, setDeliveryType] = useState("");
+  const [checkStep, setCheckStep] = useState(false);
+  // const [reservation, setReservation] = useState("");
+  const [isNextValid, setIsNextValid] = useState(true);
+console.log(isNextValid)
 
-  const calculateTotal = () => {
-    return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  
+  const { cart } = cartStore();
+
+  const {
+    register,
+    formState: { errors, isValid },
+    watch,
+  } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+    },
+  });
+
+  // Watch form changes
+  const formValues = watch();
+
+  // Update checkStep based on form validity
+  useEffect(() => {
+    setIsNextValid(!isValid);
+  }, [isValid]);
+
+  const handleBack = () => {
+    setActiveStep((prev) => Math.max(1, prev - 1));
+    setIsNextValid(true);
+  };
+
+  const handleNext = () => {
+    if (activeStep === 1 && isValid) {
+      // Process form data here
+      console.log("Form data:", formValues);
+    }
+    setActiveStep((prev) => Math.min(3, prev + 1));
   };
 
   const renderStepContent = () => {
@@ -21,91 +67,103 @@ const { cart } = cartStore();
         return (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Personal Information</h3>
-            <div className="space-y-3">
-              <input
-                type="text"
-                placeholder="Full Name"
-                className="w-full p-2 border rounded"
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                className="w-full p-2 border rounded"
-              />
-              <input
-                type="tel"
-                placeholder="Phone Number"
-                className="w-full p-2 border rounded"
-              />
+            <div className="w-full ">
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input
+                      id="firstName"
+                      {...register("firstName", {
+                        required: "First name is required",
+                      })}
+                      placeholder="Enter your first name"
+                    />
+                    {errors.firstName && (
+                      <Alert variant="destructive" className="py-2">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertDescription>
+                          {errors.firstName.message}
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input
+                      id="lastName"
+                      {...register("lastName", {
+                        required: "Last name is required",
+                      })}
+                      placeholder="Enter your last name"
+                    />
+                    {errors.lastName && (
+                      <Alert variant="destructive" className="py-2">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertDescription>
+                          {errors.lastName.message}
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      {...register("email", {
+                        required: "Email is required",
+                        pattern: {
+                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                          message: "Invalid email address",
+                        },
+                      })}
+                      placeholder="Enter your email"
+                    />
+                    {errors.email && (
+                      <Alert variant="destructive" className="py-2">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertDescription>
+                          {errors.email.message}
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      {...register("phone", {
+                        required: "Phone number is required",
+                        pattern: {
+                          value: /^[0-9-+()]*$/,
+                          message: "Invalid phone number",
+                        },
+                      })}
+                      placeholder="Enter your phone number"
+                    />
+                    {errors.phone && (
+                      <Alert variant="destructive" className="py-2">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertDescription>
+                          {errors.phone.message}
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
             </div>
           </div>
         );
       case 2:
         return (
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Delivery Options</h3>
-            <div className="space-y-3">
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setDeliveryType('delivery')}
-                  className={`flex-1 p-4 border rounded-lg ${
-                    deliveryType === 'delivery' ? 'border-blue-500 bg-blue-50' : ''
-                  }`}
-                >
-                  <Truck className="mx-auto mb-2" />
-                  <div className="text-center">Delivery</div>
-                </button>
-                <button
-                  onClick={() => setDeliveryType('dine-in')}
-                  className={`flex-1 p-4 border rounded-lg ${
-                    deliveryType === 'dine-in' ? 'border-blue-500 bg-blue-50' : ''
-                  }`}
-                >
-                  <User className="mx-auto mb-2" />
-                  <div className="text-center">Dine-in</div>
-                </button>
-              </div>
-              
-              {deliveryType === 'delivery' && (
-                <div className="border rounded-lg p-4">
-                  <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
-                    <MapPin className="w-8 h-8 text-gray-400" />
-                    <span className="ml-2">Map Component Here</span>
-                  </div>
-                </div>
-              )}
-              
-              {deliveryType === 'dine-in' && (
-                <div className="space-y-3">
-                  <div className="grid grid-cols-4 gap-2">
-                    {['12:00', '12:30', '13:00', '13:30'].map((time) => (
-                      <button
-                        key={time}
-                        onClick={() => setSelectedTime(time)}
-                        className={`p-2 border rounded ${
-                          selectedTime === time ? 'border-blue-500 bg-blue-50' : ''
-                        }`}
-                      >
-                        {time}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="grid grid-cols-3 gap-2">
-                    {['Table 1', 'Table 2', 'Table 3'].map((table) => (
-                      <button
-                        key={table}
-                        onClick={() => setSelectedTable(table)}
-                        className={`p-2 border rounded ${
-                          selectedTable === table ? 'border-blue-500 bg-blue-50' : ''
-                        }`}
-                      >
-                        {table}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+          <div>
+            <DelveryOptions setDeliveryType={setDeliveryType} deliveryType={deliveryType} setIsNextValid={setIsNextValid} />
           </div>
         );
       case 3:
@@ -146,9 +204,71 @@ const { cart } = cartStore();
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      {
-        cart.length === 0 ?( <div>Cart is empty</div>) : (
-          <div className="container mx-auto px-4">
+      {cart.length === 0 ? (
+        <div>
+          <Card className="w-full max-w-md mx-auto bg-gradient-to-br from-white to-gray-50">
+            <CardContent className="flex flex-col items-center justify-center p-12 text-center space-y-6">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 20,
+                }}
+              >
+                <div className="relative">
+                  <motion.div
+                    animate={{
+                      y: [0, -10, 0],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <ShoppingCart className="w-24 h-24 text-gray-400" />
+                  </motion.div>
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: [0, 1.2, 1] }}
+                    transition={{ delay: 0.5, duration: 0.5 }}
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full text-white text-sm flex items-center justify-center"
+                  >
+                    0
+                  </motion.div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="space-y-3"
+              >
+                <h3 className="text-4xl font-serif font-semibold text-gray-800">
+                  Your cart is empty
+                </h3>
+                <p className="text-gray-500">
+                  Looks like you haven't added anything yet
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <Button className="bg-gradient-to-r from-rose-500 to-rose-600 text-white px-8 py-2 rounded-full hover:shadow-lg transition-shadow">
+                  Start Shopping
+                </Button>
+              </motion.div>
+            </CardContent>
+          </Card>
+        </div>
+      ) : (
+        <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Left Side - Stepper and Form */}
@@ -164,8 +284,8 @@ const { cart } = cartStore();
                         <div
                           className={`w-10 h-10 rounded-full flex items-center justify-center ${
                             step <= activeStep
-                              ? 'bg-blue-500 text-white'
-                              : 'bg-gray-200'
+                              ? "bg-blue-500 text-white"
+                              : "bg-gray-200"
                           }`}
                         >
                           {step < activeStep ? (
@@ -176,17 +296,17 @@ const { cart } = cartStore();
                         </div>
                         <div className="text-sm mt-2">
                           {step === 1
-                            ? 'Information'
+                            ? "Information"
                             : step === 2
-                            ? 'Delivery'
-                            : 'Payment'}
+                            ? "Delivery"
+                            : "Payment"}
                         </div>
                       </div>
                     ))}
                     {/* Progress line */}
                     <div
                       className="absolute top-5 h-0.5 bg-gray-200 w-full -z-10"
-                      style={{ left: '0' }}
+                      style={{ left: "0" }}
                     >
                       <div
                         className="h-full bg-blue-500 transition-all duration-300"
@@ -197,32 +317,45 @@ const { cart } = cartStore();
                     </div>
                   </div>
                 </div>
-  
+
                 {/* Step Content */}
                 {renderStepContent()}
-  
+
                 {/* Navigation Buttons */}
                 <div className="flex justify-between mt-8">
                   <button
-                    onClick={() => setActiveStep((prev) => Math.max(1, prev - 1))}
+                    onClick={() => {
+                      handleBack();
+                    }}
                     className={`px-6 py-2 rounded ${
                       activeStep === 1
-                        ? 'bg-gray-100 text-gray-400'
-                        : 'bg-gray-200 text-gray-700'
+                        ? "bg-gray-100 text-gray-400"
+                        : "bg-gray-200 text-gray-700"
                     }`}
                     disabled={activeStep === 1}
                   >
                     Back
                   </button>
-                  <button
-                    onClick={() => setActiveStep((prev) => Math.min(3, prev + 1))}
-                    className="px-6 py-2 bg-blue-500 text-white rounded"
-                  >
-                    {activeStep === 3 ? 'Place Order' : 'Next'}
-                  </button>
+
+                  {activeStep === 3 ? (
+                    <button
+                      onClick={() => setCheckStep(true)}
+                      className="px-6 py-2 bg-blue-500 text-white rounded"
+                    >
+                      Place Order
+                    </button>
+                  ) : (
+                    <button
+                      disabled={isNextValid}
+                      onClick={() => handleNext()}
+                      className="px-6 py-2 bg-blue-500 text-white rounded"
+                    >
+                      Next
+                    </button>
+                  )}
                 </div>
               </div>
-  
+
               {/* Right Side - Order Summary */}
               <div className="bg-white p-6 rounded-lg shadow h-fit">
                 <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
@@ -234,7 +367,11 @@ const { cart } = cartStore();
                     >
                       <div>
                         <div className="flex items-center gap-2">
-                          <img src={item.image} alt={item.name} className="w-10 h-10 object-cover rounded-md" />
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-10 h-10 object-cover rounded-md"
+                          />
                           <div className="font-medium">{item.name}</div>
                         </div>
                         <div className="text-sm text-gray-500">
@@ -244,11 +381,19 @@ const { cart } = cartStore();
                       <div>${(item.price * item.quantity).toFixed(2)}</div>
                     </div>
                   ))}
-                  
+
                   <div className="border-t pt-4">
                     <div className="flex justify-between font-semibold">
                       <span>Total</span>
-                      <span>${calculateTotal().toFixed(2)}</span>
+                      <span>
+                        $
+                        {cart
+                          .reduce(
+                            (total, item) => total + item.price * item.quantity,
+                            0
+                          )
+                          .toFixed(2)}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -256,9 +401,7 @@ const { cart } = cartStore();
             </div>
           </div>
         </div>
-        )
-      }
-    
+      )}
     </div>
   );
 };
