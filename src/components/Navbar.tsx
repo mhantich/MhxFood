@@ -124,13 +124,17 @@ export const Navbar = () => {
           </div>
 
           {/* Mobile Menu Toggle */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-4">
+          <div className="flex md:hidden items-center gap-4">
+              <CartDrawer />
+            </div>
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="text-gray-700"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
+       
           </div>
         </div>
 
