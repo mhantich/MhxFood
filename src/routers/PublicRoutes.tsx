@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
-function ProtectedRoutes({ children }: ProtectedRouteProps) {
+function PublicRoutes({ children }: ProtectedRouteProps) {
   const { user } = useUserStore();
   const { isLoading, isAuthenticated } = useAuthStore();
   const location = useLocation();
@@ -16,12 +16,12 @@ function ProtectedRoutes({ children }: ProtectedRouteProps) {
     return <LoadingAnimation />;
   }
 
-  if (!isAuthenticated || !user) {
+  if (isAuthenticated || user) {
     // Preserve the attempted URL to redirect back after login
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/profile" state={{ from: location }} replace />;
   }
 
   return <>{children}</>;
 }
 
-export default ProtectedRoutes;
+export default PublicRoutes;

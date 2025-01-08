@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { Check, CreditCard, AlertCircle } from "lucide-react";
+import { Check, AlertCircle ,User2Icon, MailCheckIcon, PhoneCall, Clock, Table, CalendarDays, UtensilsCrossed, Package2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import cartStore from "@/stores/cartStore";
 import { ShoppingCart } from "lucide-react";
-// import DeliveryOptions from "@/components/DeliveryOptions";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,19 +10,19 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import DelveryOptions from "@/components/DelveryOptions";
-// import Information from "@/components/Information";
-// import DeliveryOptions from "@/components/DeliveryOptions";
+import { useIsValideStore } from "@/stores/nextISvalide";
+import { useReservationStore } from "@/stores/resStore";
+import { useUserStore } from "@/stores/userStore";
 
 const CheckoutPage = () => {
   const [activeStep, setActiveStep] = useState(1);
-  const [deliveryType, setDeliveryType] = useState("");
-  const [checkStep, setCheckStep] = useState(false);
-  // const [reservation, setReservation] = useState("");
-  const [isNextValid, setIsNextValid] = useState(true);
-console.log(isNextValid)
+  const [deliveryType, setDeliveryType] = useState('');
+  const { isValide, setIsValide } = useIsValideStore();
+  const token = useUserStore((state) => state.token);
 
+  const { reservation } = useReservationStore();
+  const { user } = useUserStore();
 
-  
   const { cart } = cartStore();
 
   const {
@@ -43,23 +42,75 @@ console.log(isNextValid)
   // Watch form changes
   const formValues = watch();
 
-  // Update checkStep based on form validity
   useEffect(() => {
-    setIsNextValid(!isValid);
+    if (isValid) {
+      setIsValide(true);
+    } else {
+      setIsValide(false);
+    }
   }, [isValid]);
 
   const handleBack = () => {
     setActiveStep((prev) => Math.max(1, prev - 1));
-    setIsNextValid(true);
+    setIsValide(false);
   };
 
   const handleNext = () => {
     if (activeStep === 1 && isValid) {
       // Process form data here
-      console.log("Form data:", formValues);
     }
     setActiveStep((prev) => Math.min(3, prev + 1));
   };
+
+
+  const PlaceOrder = async () => {
+    if (reservation && formValues && cart && deliveryType) {
+
+      const orderData = {
+        userId: user?._id,
+        tableId: reservation.tableId,
+        reservationDate: reservation.reservationDate,
+        startTime: reservation.startTime,
+        endTime: reservation.endTime,
+        customer: {
+          firstName: formValues.firstName,
+          lastName: formValues.lastName,
+          email: formValues.email,
+          phone: formValues.phone,
+        },
+        items: cart,
+        paymentMethod: "cash", // Adjust as needed, or make dynamic
+        orderType: deliveryType
+      }
+
+      try {
+        // Call your backend API to create a Stripe checkout session
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/order/reservation-order`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(orderData),
+        });
+  
+        const respose = await response.json();
+ 
+        if(respose.success){
+   
+          window.location.href = respose.data.sessionUrl;
+        
+        }
+  
+      } catch (error) {
+        alert('Error processing payment. Please try again.');
+      }
+    } else {
+      alert('Please fill all the fields');
+    }
+  };
+  
+  
 
   const renderStepContent = () => {
     switch (activeStep) {
@@ -163,7 +214,11 @@ console.log(isNextValid)
       case 2:
         return (
           <div>
-            <DelveryOptions setDeliveryType={setDeliveryType} deliveryType={deliveryType} setIsNextValid={setIsNextValid} />
+            <DelveryOptions
+              setDeliveryType={setDeliveryType}
+              deliveryType={deliveryType || ''}
+              setActiveStep={setActiveStep}
+            />
           </div>
         );
       case 3:
@@ -173,25 +228,70 @@ console.log(isNextValid)
             <div className="space-y-3">
               <div className="p-4 border rounded-lg">
                 <div className="flex items-center gap-2 mb-4">
-                  <CreditCard />
-                  <span>Card Details</span>
-                </div>
-                <input
-                  type="text"
-                  placeholder="Card Number"
-                  className="w-full p-2 border rounded mb-2"
-                />
-                <div className="grid grid-cols-2 gap-2">
-                  <input
-                    type="text"
-                    placeholder="MM/YY"
-                    className="p-2 border rounded"
-                  />
-                  <input
-                    type="text"
-                    placeholder="CVV"
-                    className="p-2 border rounded"
-                  />
+                <Card className="w-full max-w-2xl bg-white shadow-lg">
+      <CardContent className="p-6 space-y-6">
+        {/* User Information Section */}
+        <div className="space-y-4 border-b pb-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">Customer Details</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center gap-2 text-gray-700">
+              <User2Icon className="w-4 h-4 text-gray-400" />
+              <span className="text-sm">
+                {user?.firstName} {user?.lastName}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <MailCheckIcon className="w-4 h-4 text-gray-400" />
+              <span className="text-sm">{user?.email}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <PhoneCall className="w-4 h-4 text-gray-400" />
+              <span className="text-sm">{user?.phone}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Reservation Details Section */}
+        <div className="space-y-4 border-b pb-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">Reservation Details</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center gap-2 text-gray-700">
+              <CalendarDays className="w-4 h-4 text-gray-400" />
+              <span className="text-sm">{reservation?.reservationDate}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <Clock className="w-4 h-4 text-gray-400" />
+              <span className="text-sm">
+                {reservation?.startTime} - {reservation?.endTime}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <Table className="w-4 h-4 text-gray-400" />
+              <span className="text-sm">Table #{reservation?.tableId}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Order Details Section */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">Order Details</h3>
+          <div className="space-y-3">
+            <div className="flex items-start gap-2 text-gray-700">
+              <UtensilsCrossed className="w-4 h-4 text-gray-400 mt-1" />
+              <div className="flex-1">
+                <span className="text-sm font-medium block mb-1">Ordered Items:</span>
+                <p className="text-sm">{cart.map((item) => item.name).join(', ')}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <Package2 className="w-4 h-4 text-gray-400" />
+              <span className="text-sm capitalize">{deliveryType}</span>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+
                 </div>
               </div>
             </div>
@@ -339,14 +439,14 @@ console.log(isNextValid)
 
                   {activeStep === 3 ? (
                     <button
-                      onClick={() => setCheckStep(true)}
+                      onClick={PlaceOrder}
                       className="px-6 py-2 bg-blue-500 text-white rounded"
                     >
                       Place Order
                     </button>
                   ) : (
                     <button
-                      disabled={isNextValid}
+                      disabled={!isValide}
                       onClick={() => handleNext()}
                       className="px-6 py-2 bg-blue-500 text-white rounded"
                     >
@@ -362,7 +462,7 @@ console.log(isNextValid)
                 <div className="space-y-4">
                   {cart.map((item) => (
                     <div
-                      key={item.id}
+                      key={item._id}
                       className="flex justify-between items-center border-b pb-2"
                     >
                       <div>

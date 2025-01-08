@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useUserStore } from "@/stores/userStore";
 import {
@@ -6,44 +6,47 @@ import {
   Edit2,
   Calendar,
   Mail,
-  Github,
-  Twitter,
+
+  Clock,
+  User,
+  CreditCard,
 } from "lucide-react";
 import { getImageUrl } from "@/utlits/imageUtils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import profileReservation from "@/apis/profiles/Profile";
+import { CartItem, userOrder } from "@/utlits/types";
 
 const ProfilePage = () => {
   const user = useUserStore((state) => state.user);
   const [activeTab, setActiveTab] = useState("recipes");
+  const [orders, setOrders] = useState<userOrder[]>([]);
+  const [loading, setLoading] = useState(true);
+  const  token  = useUserStore((state) => state.token);
 
-  const stats = [
-    { label: "Recipes", value: "124" },
-    { label: "Followers", value: "12.5k" },
-    { label: "Following", value: "847" },
-    { label: "Likes", value: "2.4k" },
-  ];
 
-  const recipes = [
-    {
-      id: 1,
-      title: "Italian Pasta",
-      likes: 234,
-      image: "/api/placeholder/200/200",
-    },
-    {
-      id: 2,
-      title: "Sushi Roll",
-      likes: 187,
-      image: "/api/placeholder/200/200",
-    },
-    {
-      id: 3,
-      title: "Greek Salad",
-      likes: 156,
-      image: "/api/placeholder/200/200",
-    },
-  ];
+  const fetchOrders = async () => {
+    setLoading(true);
+    if (!user?._id || !token) return;
+    try {
+      const orders = await profileReservation(user._id ,token);
+      setOrders(orders);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+
+    fetchOrders();
+  }, []);
+
+
 
   return (
+
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <div
@@ -91,9 +94,8 @@ const ProfilePage = () => {
                   <h1 className="text-2xl font-bold text-gray-900">
                     {user?.lastName} {user?.firstName}
                   </h1>
-            
                 </div>
-         
+
                 <div className="mt-4 flex py-5 flex-wrap gap-4 justify-center sm:justify-start">
                   <div className="flex items-center text-gray-600">
                     <Calendar className="w-4 h-4 mr-2" />
@@ -103,27 +105,17 @@ const ProfilePage = () => {
                     <Mail className="w-4 h-4 mr-2" />
                     {user?.email}
                   </div>
+                  <div className="flex items-center text-gray-600">
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    {user?.phone}
+                  </div>
+                  <div className="flex items-center text-gray-600"> </div>
                 </div>
               </div>
             </div>
 
             {/* Stats */}
-            <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {stats.map((stat, index) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-gray-50 rounded-lg p-4 text-center"
-                >
-                  <div className="text-2xl font-bold text-gray-900">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-gray-600">{stat.label}</div>
-                </motion.div>
-              ))}
-            </div>
+
           </div>
 
           {/* Tabs */}
@@ -146,61 +138,99 @@ const ProfilePage = () => {
           </div>
 
           {/* Tab Content */}
-          <div className="p-6 sm:p-8">
-            {activeTab === "recipes" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {recipes.map((recipe, index) => (
-                  <motion.div
-                    key={recipe.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-white rounded-lg shadow-md overflow-hidden"
-                  >
-                    <img
-                      src={recipe.image}
-                      alt={recipe.title}
-                      className="w-full h-48 object-cover"
-                    />
-                    <div className="p-4">
-                      <h3 className="text-lg font-medium text-gray-900">
-                        {recipe.title}
-                      </h3>
-                      <p className="mt-1 text-sm text-gray-600">
-                        {recipe.likes} likes
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            )}
 
-            {activeTab === "about" && (
-              <div className="max-w-3xl">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">
-                  About Me
-                </h2>
-                <p className="text-gray-600 mb-6">
-                  Passionate food enthusiast and professional chef with over 8
-                  years of experience in creating delicious, innovative dishes.
-                  Specializing in fusion cuisine and healthy cooking
-                  alternatives.
-                </p>
-                <div className="flex gap-4">
-                  <a
-                    href="#"
-                    className="flex items-center text-gray-600 hover:text-gray-900"
-                  >
-                    <Github className="w-5 h-5 mr-2" />
-                    @sarahjchef
-                  </a>
-                  <a
-                    href="#"
-                    className="flex items-center text-gray-600 hover:text-gray-900"
-                  >
-                    <Twitter className="w-5 h-5 mr-2" />
-                    @sarahjchef
-                  </a>
+{   loading ? (
+            <div className="flex justify-center items-center h-full">
+              <p className="text-gray-500">Loading...</p>
+            </div>
+          ) : (
+            <div className="p-6 sm:p-8">
+              {activeTab === "recipes" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="w-full max-w-4xl mx-auto p-4 space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-2xl font-bold">
+                        Order History
+                      </CardTitle>
+                    </CardHeader>
+                  </Card>
+
+                  <div className="h-[600px] rounded-md">
+                    <div className="space-y-4">
+                      {orders.map((order: any) => (
+                        <Card
+                          key={order._id}
+                          className="border border-gray-200"
+                        >
+                          <CardContent className="p-6">
+                            <div className="flex flex-col space-y-4">
+                              {/* Order Header */}
+                              <div className="flex justify-between items-start">
+                                <div className="flex items-center space-x-2">
+                                  <Clock className="w-4 h-4 text-gray-500" />
+                                </div>
+                                <div>{order.status.toUpperCase()}</div>
+                              </div>
+
+                              {/* Customer Info */}
+                              <div className="flex items-center space-x-2 text-sm">
+                                <User className="w-4 h-4 text-gray-500" />
+                                <span>
+                                  {order.customer.firstName}{" "}
+                                  {order.customer.lastName}
+                                </span>
+                              </div>
+
+                              {/* Order Items */}
+                              <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+                                {order?.items?.map((item: CartItem) => (
+                                  <div
+                                    key={item._id}
+                                    className="flex justify-between items-center"
+                                  >
+                                    <div className="flex items-center space-x-2">
+                                      <div className="w-12 h-12 bg-gray-200 rounded-md overflow-hidden">
+                                        <img
+                                          src={item.image}
+                                          alt={item.name}
+                                          className="w-full h-full object-cover"
+                                        />
+                                      </div>
+                                      <div>
+                                        <p className="font-medium">
+                                          {item.name}
+                                        </p>
+                                        <p className="text-sm text-gray-500">
+                                          Qty: {item.quantity}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <p className="font-medium">${item.price}</p>
+                                  </div>
+                                ))}
+                              </div>
+
+                              {/* Order Footer */}
+                              <div className="flex justify-between items-center pt-4 border-t">
+                                <div className="flex items-center space-x-2">
+                                    
+                                </div>
+                                <div className="text-right">
+                                  <p className="text-sm text-gray-500">
+                                    Total Amount
+                                  </p>
+                                  <p className="text-lg font-bold">
+                                    ${order?.totalAmount}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -212,7 +242,10 @@ const ProfilePage = () => {
                 </div>
               </div>
             )}
-          </div>
+          </div>  
+          )}
+
+
         </div>
       </div>
     </div>

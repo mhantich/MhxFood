@@ -23,7 +23,7 @@ export const getMeals = async ({
       if (page) params.append('page', page.toString());
       if (limit) params.append('limit', limit.toString());
       if (sortBy) params.append('sortBy', sortBy);
-      console.log(params);
+      
 
 
   
@@ -44,7 +44,6 @@ export const getMeals = async ({
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Error fetching meals:', error);
       throw error;
     }
   };

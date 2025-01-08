@@ -1,14 +1,7 @@
+import { CartItem } from "@/utlits/types";
 import { create } from "zustand";
 
-interface CartItem {
-  // define your cart item properties here
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
-  // ... other properties
-}
+
 
 interface CartStore {
   cart: CartItem[];
@@ -21,9 +14,8 @@ const cartStore = create<CartStore>((set) => ({
   cart: [],
   addToCart: (item: CartItem) => {
     set((state) => {
-      const existingItem = state.cart.find((i) => i.id === item.id);
-      console.log(existingItem);
-      console.log(item);
+      const existingItem = state.cart.find((i) => i._id === item._id);
+ 
       if (existingItem) {
         existingItem.quantity += 1;
         return { cart: [...state.cart] };
@@ -32,7 +24,7 @@ const cartStore = create<CartStore>((set) => ({
     });
   },
   removeFromCart: (item: CartItem) => {
-    set((state: CartStore) => ({ cart: state.cart.filter((i) => i.id !== item.id) }));
+    set((state: CartStore) => ({ cart: state.cart.filter((i) => i._id !== item._id) }));
   },
   clearCart: () => {
     set({ cart: [] });

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/stores/userStore';
 import { signUp } from '@/apis/auth/singUp';
+import toast from 'react-hot-toast';
 interface SignUpFormData {
   firstName: string;
   lastName: string;
@@ -16,8 +17,8 @@ interface SignUpFormData {
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState('');
   const [preview, setPreview] = useState<string | null>(null);
+  const [error] = useState('');
   const setUser = useUserStore((state) => state.setUser);
   
   const {
@@ -47,18 +48,20 @@ const SignUp = () => {
   
       const result = await signUp(formData);
   
-      if (!result.ok) {
-        throw new Error(result.message || 'Sign up failed');
-      }
-  
-      setUser({
-        token: result.token,
-        user: result.user
-      });
-  
-      navigate('/profile');
+     if(result.status){
+      toast.success(result.message);
+
+      
+          setUser({
+            token: result.token,
+            user: result.user
+          });
+          navigate('/profile');
+     }else{
+      toast.error(result?.message);
+     }
     } catch (err: any) {
-      setError(err?.message);
+      toast.error(err?.message);
     }
   };
 

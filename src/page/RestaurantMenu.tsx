@@ -13,13 +13,13 @@ const MenuCard = ({
   price,
   description,
   imageUrl,
-  id,
+  _id,
 }: {
   title: string;
   price: string;
   description: string;
   imageUrl: string;
-  id: number;
+  _id: string;
 }) => {
   const { addToCart } = cartStore();
   return (
@@ -49,7 +49,7 @@ const MenuCard = ({
           <button
             onClick={() => {
               addToCart({
-                id: +id,
+                _id: _id,
                 name: title,
                 price: parseFloat(price),
                 image: imageUrl,
@@ -58,7 +58,7 @@ const MenuCard = ({
             }}
             className="bg-black text-white font-serif text-sm  px-4 py-2 flex w-full justify-center items-center capitalize rounded-md"
           >
-            add to menu <PlusIcon className="w-4 h-4" />
+               add to menu <PlusIcon className="w-4 h-4" />
           </button>
         </div>
       </Card>
@@ -132,12 +132,10 @@ const RestaurantMenu = () => {
       const data = await getCatigore();
       setCategories(data);
     } catch (error) {
-      console.error("Error loading categories:", error);
     }
   };
 
   const loadMeals = async (params = {}) => {
-    console.log(params);
     try {
       setLoading(true);
       setError(null);
@@ -154,10 +152,7 @@ const RestaurantMenu = () => {
 
 
   const handleSearch = (searchFilters: FilterFormData) => {
-    console.log(searchFilters);
-    console.log(
-      'rest srach'
-    );
+
     loadMeals({
       "search": searchFilters.search,
       "minPrice": searchFilters.priceRange.min,
@@ -252,7 +247,7 @@ const RestaurantMenu = () => {
         {meals.map((meal) => (
           <MenuCard
             key={meal._id}
-            id={Number(meal._id)}
+            _id={meal._id}
             title={meal.name}
             price={meal.price.toString()}
             description={meal.description}

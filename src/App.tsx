@@ -1,40 +1,53 @@
 import { RouterProvider } from 'react-router-dom';
 import { routers } from './routers/router';
-import { useUserStore } from './stores/userStore';
-import { useEffect, useState } from 'react';
 import { checkAuth } from './apis/auth/checkAuth';
+import { useUserStore } from './stores/userStore';
+import { useAuthStore } from './stores/authStore';
+import { useEffect } from 'react';
+import { Toaster } from 'react-hot-toast';
+
+
 
 function App() {
   const token = localStorage.getItem('token');
   const setUser = useUserStore((state) => state.setUser);
-  const [error, setError] = useState('');
+  const { setAuthState, setLoading } = useAuthStore();
 
-// validate-token'
-const onSubmit = async () => {
-  try {
-    const response = await checkAuth(token as string);
- console.log(token);
-    // Save user data to Zustand store
-    setUser({
-      user: response.user,
-      token: response.token
-    });
-      if(response.ok){
-      }
-      
-  } catch (err:any) {
-    setError(err?.message);
-  
-  }
-};
+
+
 useEffect(() => {
-  onSubmit();
-}, []);
-console.log(error);
+  const validateAuth = async () => {
+    if (!token) {
+      setLoading(false);
+      setAuthState(false);
+      return;
+    }
+
+    try {
+      const response = await checkAuth(token);
+      setUser({
+        user: response.user,
+        token: response.token
+      });
+      setAuthState(true);
+    } catch (err) {
+      localStorage.removeItem('token');
+      setUser({ user: null, token: null });
+      setAuthState(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  validateAuth();
+}, [token, setUser, setAuthState, setLoading]);
+
 
   return (
-
-     <RouterProvider router={routers} />
+<div>
+  <Toaster />
+  <RouterProvider router={routers} />
+</div>
 
   )
 }

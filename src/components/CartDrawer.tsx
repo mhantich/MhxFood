@@ -9,13 +9,12 @@ import { Link } from 'react-router-dom';
 
 export const CartDrawer = () => {
  
-  const { cart, addToCart, removeFromCart, clearCart } = cartStore();
+  const { cart} = cartStore();
   
     const getTotalPrice = () => {
       return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
     };
 
-    console.log(cart);
   
     const CartItem = ({ item, index }: { item: any; index: number }) => (
       <motion.div
@@ -67,18 +66,25 @@ export const CartDrawer = () => {
           </SheetHeader>
           <div className="mt-2 flex flex-col h-full">
             <div className="flex-1 overflow-y-auto">
-              <AnimatePresence>
-                {cart.map((item, index) => (
-                  <CartItem key={item.id} item={item} index={index} />
-                ))}
-              </AnimatePresence>
+
+              {cart.length === 0 ? (
+                <div className="flex justify-center items-center h-full">
+                  <p className="text-gray-500">Your cart is empty.</p>
+                </div>
+              ) : (
+                <AnimatePresence>
+                  {cart.map((item, index) => (
+                    <CartItem key={item._id} item={item} index={index} />
+                  ))}
+                </AnimatePresence>
+              )}
             </div>
             <div className="border-t py-10  mt-auto">
               <div className="flex justify-between mb-4">
                 <span className="font-medium">Total:</span>
                 <span className="font-medium">${getTotalPrice().toFixed(2)}</span>
               </div>
-              <Button className="w-full" size="lg">
+              <Button disabled={cart.length === 0} className="w-full" size="lg">
                 <Link className='text-white' to="/checkout">
                 Checkout (${getTotalPrice().toFixed(2)})
                 </Link>

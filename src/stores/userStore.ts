@@ -1,15 +1,7 @@
+import { User } from '@/utlits/types';
 import { create } from 'zustand';
 
-interface User {
- 
-  email: string;
-  profileImage: string;
-  createdAt: string;
-  phone: string;
-  lastName: string;
-  firstName: string;
-  
-}
+
 
 type UserStore = {
   user: User | null;

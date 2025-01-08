@@ -4,16 +4,19 @@ import { Link } from "react-router-dom";
 import { useUserStore } from "@/stores/userStore";
 import { CartDrawer } from "./CartDrawer";
 import { getImageUrl } from "@/utlits/imageUtils";
+import { useAuthStore } from "@/stores/authStore";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { user, logout } = useUserStore();
-  console.log(user);
+  const { setAuthState } = useAuthStore();
 
   const handleLogout = () => {
     logout();
     setIsProfileOpen(false);
+    setAuthState(false);
+    
   };
 
   return (

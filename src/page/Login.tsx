@@ -4,14 +4,17 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/stores/userStore';
+import toast from 'react-hot-toast';
+
 
 import { login } from '@/apis/auth/login';
+import { useAuthStore } from '@/stores/authStore';
 
 const Login = () => {
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const setUser = useUserStore((state) => state.setUser);
-  
+  const { setAuthState } = useAuthStore();
   const {
     register,
     handleSubmit,
@@ -28,22 +31,25 @@ const Login = () => {
     try {
    
       const result = await login(data.email, data.password);
-      console.log(result);
 
-      if (result.ok) {
-        console.log(result.token);
-      }
+   if(result.status){
+    toast.success(result.message);
+
+    setAuthState(true);
+    
+    setUser({
+      token: result.token,
+      user: result.user
+    });
+    navigate('/profile');
+   }
 
       // Save user data to Zustand store
-      setUser({
-        token: result.token,
-        user: result.user
-      });
       if (data.rememberMe) {
         localStorage.setItem('token', result.token);
       }
 
-      navigate('/profile');
+      // navigate('/profile');
     } catch (err:any) {
       setError(err?.message);
     }
