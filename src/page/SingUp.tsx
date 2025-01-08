@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/stores/userStore';
 import { signUp } from '@/apis/auth/singUp';
 import toast from 'react-hot-toast';
+import { useAuthStore } from '@/stores/authStore';
 interface SignUpFormData {
   firstName: string;
   lastName: string;
@@ -20,6 +21,12 @@ const SignUp = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const [error] = useState('');
   const setUser = useUserStore((state) => state.setUser);
+
+
+  const { setAuthState } = useAuthStore();
+
+
+
   
   const {
     register,
@@ -50,12 +57,13 @@ const SignUp = () => {
   
      if(result.status){
       toast.success(result.message);
-
+      setUser({
+        token: result.token,
+        user: result.user
+      });
+      setAuthState(true);
       
-          setUser({
-            token: result.token,
-            user: result.user
-          });
+     
           navigate('/profile');
      }else{
       toast.error(result?.message);
