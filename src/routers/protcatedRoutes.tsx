@@ -12,8 +12,11 @@ function ProtectedRoutes({ children }: ProtectedRouteProps) {
   const { isLoading, isAuthenticated } = useAuthStore();
   const location = useLocation();
 
+
   if (isLoading) {
     return <LoadingAnimation />;
+
+
   }
 
   if (!isAuthenticated || !user) {

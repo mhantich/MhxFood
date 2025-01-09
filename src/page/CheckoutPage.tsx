@@ -304,7 +304,7 @@ const CheckoutPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-10">
       {cart.length === 0 ? (
         <div>
           <Card className="w-full max-w-md mx-auto bg-gradient-to-br from-white to-gray-50">

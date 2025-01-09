@@ -80,14 +80,17 @@ const DeniIn = ({setActiveStep}:{setActiveStep: (step: number) => void}) => {
   };
 
   return (
-    <div className="w-full mx-auto p-1">
+    <div className="w-full mx-auto">
       <CardHeader>
         <CardTitle>Table Reservation</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
           <Label>Date</Label>
+          <div className="flex justify-center items-center">
+
           <Calendar
+            className="p-2 overflow-x-auto   "
             mode="single"
             selected={reservationDate as Date}
             onSelect={(date) => setValue("reservationDate", date)}
@@ -96,8 +99,8 @@ const DeniIn = ({setActiveStep}:{setActiveStep: (step: number) => void}) => {
               today.setHours(0, 0, 0, 0);
               return date < today;
             }}
-            className="rounded-md border"
           />
+          </div>
         </div>
 
         <div className="space-y-2">

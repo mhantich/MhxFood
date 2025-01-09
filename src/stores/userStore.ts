@@ -2,11 +2,11 @@ import { User } from '@/utlits/types';
 import { create } from 'zustand';
 
 
-
 type UserStore = {
   user: User | null;
   token: string | null;
-  setUser: (userData: { user: User | null; token: string | null }) => void;
+  setUser: (user: User | null) => void;
+  setToken: (token: string | null) => void;
   logout: () => void;
 }
 
@@ -18,13 +18,19 @@ const getInitialState = () => ({
 
 export const useUserStore = create<UserStore>((set) => ({
   ...getInitialState(),
-  setUser: (userData: { user: User | null; token: string | null }) => {
+  setUser: (user) => {
 
-    if (userData.token && userData.user) {
-      localStorage.setItem('token', userData.token);
-      localStorage.setItem('user', JSON.stringify(userData.user));
+    localStorage.setItem('user', JSON.stringify(user));
+    set({user});
+
+  },
+  setToken: (token: string | null) => {
+
+    if (token) {
+      localStorage.setItem('token', token);
+
+      set({ token });
     }
-    set({ user: userData.user , token: userData.token});
   },
   logout: () => {
     localStorage.removeItem('user');
@@ -32,4 +38,3 @@ export const useUserStore = create<UserStore>((set) => ({
     set({ user: null, token: null });
   }
 }));
-

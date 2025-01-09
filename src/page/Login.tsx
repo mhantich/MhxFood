@@ -1,63 +1,58 @@
-import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useUserStore } from "@/stores/userStore";
-import toast from "react-hot-toast";
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useUserStore } from '@/stores/userStore';
+import toast from 'react-hot-toast';
 
-import { login } from "@/apis/auth/login";
-import { useAuthStore } from "@/stores/authStore";
+
+import { login } from '@/apis/auth/login';
+import { useAuthStore } from '@/stores/authStore';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const setUser = useUserStore((state) => state.setUser);
   const { setAuthState } = useAuthStore();
+  const setToken = useUserStore((state) => state.setToken);
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting }
   } = useForm({
     defaultValues: {
-      email: "",
-      password: "",
-      rememberMe: false,
-    },
+      email: '',
+      password: '',
+      rememberMe: false
+    }
   });
 
   const onSubmit = async (data: any) => {
     try {
       const result = await login(data.email, data.password);
-
+      
       if (result.status) {
-        toast.success(result.message);
+        setUser(result.user);
+        setToken(result.token);
         setAuthState(true);
-        setUser({
-          token: result.token,
-          user: result.user,
-        });
-
-        navigate("/profile");
-      } else {
-        toast.error(result.message);
+        toast.success(result.message);
+        navigate('/profile');
       }
-
     } catch (err: any) {
       setError(err?.message);
     }
   };
 
   return (
-    <div
-      style={{ backgroundImage: `url(hero-img.jpg)` }}
-      className="min-h-screen relative bg-gray-50 flex flex-col items-center justify-center p-4"
-    >
+    <div  style={{backgroundImage: `url(hero-img.jpg)`}} className="min-h-screen relative bg-gray-50 flex flex-col items-center justify-center p-4">
       {/* Background elements */}
-      <div className="bg-black/70 w-full h-full absolute top-0 left-0" z-10 />
+      <div className='bg-black/70 w-full h-full absolute top-0 left-0'  z-10 />
+   
+
 
       {/* Main content */}
-      <motion.div
+      <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -80,8 +75,7 @@ const Login = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <h1 className="text-2xl font-bold text-center mb-8">Login</h1>
           <p className="text-center text-gray-600 text-sm mb-8">
-            More than <span className="text-pink-500">15,000 recipes</span> from
-            around the world!
+            More than <span className="text-pink-500">15,000 recipes</span> from around the world!
           </p>
 
           {error && (
@@ -100,21 +94,19 @@ const Login = () => {
             transition={{ delay: 0.2 }}
           >
             <input
-              {...register("email", {
-                required: "Email is required",
+              {...register('email', { 
+                required: 'Email is required',
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
-                },
+                  message: 'Invalid email address'
+                }
               })}
               type="email"
               placeholder="Enter Email Address"
               className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-pink-500"
             />
             {errors.email && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.email.message}
-              </p>
+              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
             )}
           </motion.div>
 
@@ -124,37 +116,32 @@ const Login = () => {
             transition={{ delay: 0.3 }}
           >
             <input
-              {...register("password", {
-                required: "Password is required",
+              {...register('password', { 
+                required: 'Password is required',
                 minLength: {
                   value: 6,
-                  message: "Password must be at least 6 characters",
-                },
+                  message: 'Password must be at least 6 characters'
+                }
               })}
               type="password"
               placeholder="Password"
               className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-pink-500"
             />
             {errors.password && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.password.message}
-              </p>
+              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
             )}
           </motion.div>
 
           <div className="flex justify-between text-sm text-gray-600">
             <label className="flex items-center">
-              <input
-                type="checkbox"
+              <input 
+                type="checkbox" 
                 className="mr-2"
-                {...register("rememberMe")}
+                {...register('rememberMe')}
               />
               Remember me
             </label>
-            <Link
-              to="/forgot-password"
-              className="text-gray-600 hover:text-pink-500"
-            >
+            <Link to="/forgot-password" className="text-gray-600 hover:text-pink-500">
               Forgot Password?
             </Link>
           </div>
@@ -166,10 +153,10 @@ const Login = () => {
             className="w-full py-3 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors disabled:bg-pink-300"
             type="submit"
           >
-            {isSubmitting ? "LOGGING IN..." : "LOGIN"}
+            {isSubmitting ? 'LOGGING IN...' : 'LOGIN'}
           </motion.button>
 
-          <div className="text-center text-sm text-gray-600">
+          <div className="text-center text-sm text-gray-600"> 
             <p className="capitalize">Don't have an account?</p>
             <Link className="text-red-400 capitalize underline" to="/signup">
               Sign Up
@@ -178,8 +165,7 @@ const Login = () => {
         </form>
       </motion.div>
 
-      {/* Footer */}
-  
+
     </div>
   );
 };

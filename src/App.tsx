@@ -9,42 +9,52 @@ import { Toaster } from 'react-hot-toast';
 
 
 function App() {
-  const token = localStorage.getItem('token');
   const setUser = useUserStore((state) => state.setUser);
+  const setToken = useUserStore((state) => state.setToken);
   const { setAuthState, setLoading } = useAuthStore();
 
 
 
-useEffect(() => {
-  const validateAuth = async () => {
-    if (!token) {
-      setLoading(false);
-      setAuthState(false);
-      return;
-    }
 
-    try {
-      const response = await checkAuth(token);
-      if(response.valid){
-        setUser({
-          user: response.user,
-          token:token
-        });
-        setAuthState(true);
+
+  useEffect(() =>  {
+
+     const validateAuth = async () => {
+      const storedToken = localStorage.getItem('token');
+      
+      if (!storedToken) {
+
+        setLoading(false);
+        setAuthState(false);
+        return;
       }
-      setAuthState(true);
-    } catch (err) {
-      localStorage.removeItem('token');
-      setUser({ user: null, token: null });
-      setAuthState(false);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  validateAuth();
-}, [token, setUser, setAuthState, setLoading]);
+     try {
 
+     
+        const response = await checkAuth(storedToken);   
+        if (response.valid) {
+          setAuthState(true);
+          setUser(response.user );
+          setToken(storedToken);
+        } else {
+          
+          setUser(null );
+          setToken(null);
+          setAuthState(false);
+        }
+      } catch (err) {
+        localStorage.removeItem('token');
+        setUser(null );
+        setToken(null);
+        setAuthState(false);
+      } finally {
+        setLoading(false);
+     }
+    };
+
+    validateAuth();
+   }, []); 
 
   return (
 <div>

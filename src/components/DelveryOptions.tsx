@@ -40,7 +40,7 @@ const DelveryOptions = ({
   return (
     <div>
       <div>
-        <div className="w-full p-1 bg-white flex justify-between items-center gap-2">
+        <div className="w-full  bg-white flex justify-between items-center gap-2">
         <Button  className= {`${deliveryType === 'dine-in' ? 'bg-rose-500 text-white' : 'bg-gray-200 text-rose-500'} px-4 py-2 w-full rounded-md`} onClick={() => setDeliveryType('dine-in')}>
               Dine In
             </Button>
@@ -59,7 +59,7 @@ const DelveryOptions = ({
             </FormProvider>
         )}
         {deliveryType === "delivery" && (
-          <div className="w-full p-4 bg-white">
+          <div className="w-full  bg-white">
             <input
               type="text"
               placeholder="Enter your address"
