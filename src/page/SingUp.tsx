@@ -21,6 +21,8 @@ const SignUp = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const [error] = useState('');
   const setUser = useUserStore((state) => state.setUser);
+  const setToken = useUserStore((state) => state.setToken);
+
 
 
   const { setAuthState } = useAuthStore();
@@ -57,10 +59,9 @@ const SignUp = () => {
   
      if(result.status){
       toast.success(result.message);
-      setUser({
-        token: result.token,
-        user: result.user
-      });
+      setUser(result.user);
+      setToken(result.token);
+
       setAuthState(true);
       
      
