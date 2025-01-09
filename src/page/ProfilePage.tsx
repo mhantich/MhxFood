@@ -166,7 +166,7 @@ const ProfilePage = () => {
           ) : (
             <div className="p-6 sm:p-8">
               {activeTab === "recipes" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="">
                 <div className="w-full max-w-4xl mx-auto p-4 space-y-4">
                   <Card>
                     <CardHeader>
@@ -176,80 +176,63 @@ const ProfilePage = () => {
                     </CardHeader>
                   </Card>
 
-                  <div className="h-[600px] rounded-md">
-                    <div className="space-y-4">
-                      {orders.map((order: any) => (
-                        <Card
-                          key={order._id}
-                          className="border border-gray-200"
-                        >
-                          <CardContent className="p-6">
-                            <div className="flex flex-col space-y-4">
-                              {/* Order Header */}
-                              <div className="flex justify-between items-start">
-                                <div className="flex items-center space-x-2">
-                                  <Clock className="w-4 h-4 text-gray-500" />
-                                </div>
-                                <div>{order.status.toUpperCase()}</div>
-                              </div>
-
-                              {/* Customer Info */}
-                              <div className="flex items-center space-x-2 text-sm">
-                                <User className="w-4 h-4 text-gray-500" />
-                                <span>
-                                  {order.customer.firstName}{" "}
-                                  {order.customer.lastName}
-                                </span>
-                              </div>
-
-                              {/* Order Items */}
-                              <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                                {order?.items?.map((item: CartItem) => (
-                                  <div
-                                    key={item._id}
-                                    className="flex justify-between items-center"
-                                  >
-                                    <div className="flex items-center space-x-2">
-                                      <div className="w-12 h-12 bg-gray-200 rounded-md overflow-hidden">
-                                        <img
-                                          src={item.image}
-                                          alt={item.name}
-                                          className="w-full h-full object-cover"
-                                        />
-                                      </div>
-                                      <div>
-                                        <p className="font-medium">
-                                          {item.name}
-                                        </p>
-                                        <p className="text-sm text-gray-500">
-                                          Qty: {item.quantity}
-                                        </p>
-                                      </div>
-                                    </div>
-                                    <p className="font-medium">${item.price}</p>
-                                  </div>
-                                ))}
-                              </div>
-
-                              {/* Order Footer */}
-                              <div className="flex justify-between items-center pt-4 border-t">
-                                <div className="flex items-center space-x-2">
-                                    
-                                </div>
-                                <div className="text-right">
-                                  <p className="text-sm text-gray-500">
-                                    Total Amount
-                                  </p>
-                                  <p className="text-lg font-bold">
-                                    ${order?.totalAmount}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+                  <div >
+                  <div className="overflow-x-auto">
+      <table className="w-full border-collapse">
+        <thead>
+          <tr className="bg-gray-50">
+            <th className="p-4 text-left border">Status</th>
+            <th className="p-4 text-left border">Customer</th>
+            <th className="p-4 text-left border">Items</th>
+            <th className="p-4 text-left border">Total Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.map((order) => (
+            <tr key={order._id} className="border-b hover:bg-gray-50">
+              <td className="p-4 border">
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-gray-500" />
+                  <span>{order.status.toUpperCase()}</span>
+                </div>
+              </td>
+              <td className="p-4 border">
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-gray-500" />
+                  <span>
+                    {order.customer.firstName} {order.customer.lastName}
+                  </span>
+                </div>
+              </td>
+              <td className="p-4 border">
+                <div className="space-y-2">
+                  {order?.items?.map((item) => (
+                    <div key={item._id} className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-gray-200 rounded-md overflow-hidden flex-shrink-0">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-grow">
+                        <p className="font-medium">{item.name}</p>
+                        <p className="text-sm text-gray-500">
+                          Qty: {item.quantity} × ${item.price}
+                        </p>
+                      </div>
                     </div>
+                  ))}
+                </div>
+              </td>
+              <td className="p-4 border">
+                <p className="font-bold">${order?.totalAmount}</p>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
                   </div>
                 </div>
               </div>
