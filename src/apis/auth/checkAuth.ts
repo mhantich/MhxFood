@@ -4,9 +4,11 @@ export const checkAuth = async (token:string) => {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
-            credentials: 'include', 
+            
 
         },
+        credentials: 'include', // Pass it as a separate option
+
     });
     const data = await response.json();
     return data;

@@ -90,8 +90,8 @@ const CheckoutPage = () => {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
-            credentials: 'include', // Include cookies if required
           },
+          credentials: 'include', 
           body: JSON.stringify(orderData),
         });
   
