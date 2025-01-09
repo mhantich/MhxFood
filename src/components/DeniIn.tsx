@@ -80,7 +80,7 @@ const DeniIn = ({setActiveStep}:{setActiveStep: (step: number) => void}) => {
   };
 
   return (
-    <div className="w-full mx-auto p-4">
+    <div className="w-full mx-auto p-1">
       <CardHeader>
         <CardTitle>Table Reservation</CardTitle>
       </CardHeader>

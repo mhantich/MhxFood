@@ -10,11 +10,13 @@ import {
   Clock,
   User,
   CreditCard,
+  LoaderCircle,
 } from "lucide-react";
 import { getImageUrl } from "@/utlits/imageUtils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import profileReservation from "@/apis/profiles/Profile";
 import { CartItem, userOrder } from "@/utlits/types";
+import toast from "react-hot-toast";
 
 const ProfilePage = () => {
   const user = useUserStore((state) => state.user);
@@ -22,17 +24,27 @@ const ProfilePage = () => {
   const [orders, setOrders] = useState<userOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const  token  = useUserStore((state) => state.token);
+  const [error, setError] = useState("");
 
 
   const fetchOrders = async () => {
     setLoading(true);
     if (!user?._id || !token) return;
     try {
+      
       const orders = await profileReservation(user._id ,token);
-      setOrders(orders);
-      setLoading(false);
+      if(orders.success){  
+        setOrders(orders.data);
+        setLoading(false);
+      }else{
+        setLoading(false);
+        toast.error(orders.message);
+        setError(orders.message);
+
+      }
     } catch (error) {
       console.error("Error fetching orders:", error);
+      setError('no orders found');
     } finally {
       setLoading(false);
     }
@@ -138,10 +150,18 @@ const ProfilePage = () => {
           </div>
 
           {/* Tab Content */}
+          {error ?(
+            <div className="flex justify-center items-center h-full">
+              <p className="text-gray-500">{error}</p>
+            </div>
+          ) : (
+            <div>
 
 {   loading ? (
             <div className="flex justify-center items-center h-full">
-              <p className="text-gray-500">Loading...</p>
+              <p className="text-gray-500">
+                <LoaderCircle className="w-20 h-20 text-gray-500 animate-spin py-10" />
+              </p>
             </div>
           ) : (
             <div className="p-6 sm:p-8">
@@ -243,6 +263,8 @@ const ProfilePage = () => {
               </div>
             )}
           </div>  
+          )}
+          </div>
           )}
 
 

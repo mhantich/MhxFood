@@ -3,7 +3,8 @@ const profileReservation = async (userId: string , token: string) => {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${token}`,
+      credentials: 'include', // Include cookies if required
     }
   });
   return response.json();

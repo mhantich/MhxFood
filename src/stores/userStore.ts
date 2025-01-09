@@ -20,10 +20,11 @@ export const useUserStore = create<UserStore>((set) => ({
   ...getInitialState(),
   setUser: (userData: { user: User | null; token: string | null }) => {
 
-    if (userData.token) {
+    if (userData.token && userData.user) {
       localStorage.setItem('token', userData.token);
+      localStorage.setItem('user', JSON.stringify(userData.user));
     }
-    set({ user: userData.user});
+    set({ user: userData.user , token: userData.token});
   },
   logout: () => {
     localStorage.removeItem('user');

@@ -25,10 +25,13 @@ useEffect(() => {
 
     try {
       const response = await checkAuth(token);
-      setUser({
-        user: response.user,
-        token: response.token
-      });
+      if(response.valid){
+        setUser({
+          user: response.user,
+          token:token
+        });
+        setAuthState(true);
+      }
       setAuthState(true);
     } catch (err) {
       localStorage.removeItem('token');
