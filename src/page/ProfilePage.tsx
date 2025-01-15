@@ -13,9 +13,9 @@ import {
   LoaderCircle,
 } from "lucide-react";
 import { getImageUrl } from "@/utlits/imageUtils";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import profileReservation from "@/apis/profiles/Profile";
-import { CartItem, userOrder } from "@/utlits/types";
+import { userOrder } from "@/utlits/types";
 import toast from "react-hot-toast";
 
 const ProfilePage = () => {
