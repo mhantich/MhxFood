@@ -28,7 +28,7 @@ export const getMeals = async ({
 
   
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/meals?${params.toString()}`,
+        `${import.meta.env.VITE_API_URL_2}/api/meals?${params.toString()}`,
         {
           method: 'GET',
           headers: {

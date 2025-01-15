@@ -1,5 +1,5 @@
 export const getCatigore = async () => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/categories`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL_2}/api/categories`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
